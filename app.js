@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express();
+const app = express(process.env.PORT || 3000);
 const http = require('http');
 var fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
