@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css">
+    <link href="libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="libraries/owl.carousel/assets/owl.carousel.css" rel="stylesheet" type="text/css">
+    <link href="libraries/colorbox/example1/colorbox.css" rel="stylesheet" type="text/css">
+    <link href="libraries/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+    <link href="libraries/bootstrap-fileinput/fileinput.min.css" rel="stylesheet" type="text/css">
+    <link href="css/superlist.css" rel="stylesheet" type="text/css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+<style>.open-button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: fixed;
+    bottom: 23px;
+    right: 28px;
+    width: 280px;
+  }
+  
+  /* The popup form - hidden by default */
+  .form-popup {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+  }
+  
+  /* Add styles to the form container */
+  .form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+  }
+  
+  /* Full-width input fields */
+  .form-container input[type=text], .form-container input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  /* When the inputs get focus, do something */
+  .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+  
+  /* Set a style for the submit/login button */
+  .form-container .btn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    opacity: 0.8;
+  }
+  
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+    background-color: red;
+  }
+  
+  /* Add some hover effects to buttons */
+  .form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+  }</style>
+    <title>TruthOrDare - Video Chatting App</title>
+</head>
+
+
+<body class="">
+
+    <div class="page-wrapper">
+
+        <header class="header header-transparent">
+            <div class="header-wrapper">
+                <div class="container">
+                    <div class="header-inner">
+                        <div class="header-logo">
+                            <a href="/home">
+                                <img src="img/logo-white.png" alt="Logo">
+                                <span>TruthOrDare</span>
+                            </a>
+                        </div><!-- /.header-logo -->
+
+                        <div class="header-content">
+                            <div class="header-bottom">
+
+
+                                <ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+                                    <li class="active">
+                                        <a href = "/home">Home</a>
+                                    </li>                               
+
+                                    <li class="sub-menu ">
+                                        <a href="/editprofile">Profile <i class="fa fa-chevron-down"></i></a>
+
+                                        <ul class="sub-menu">
+                                         
+
+                                            <li>
+                                                <a>User Account</a>
+
+                                                <ul>
+                                                    <li><a href="/editprofile">Edit Profile</a></li>
+                                                    <li><a href="/changepassword">Change Password</a></li>
+                                                </ul>
+                                            </li>
+
+                                           
+                                       
+                                        </ul>
+                                  
+                                    <li>
+                                        <%if (username) { %>
+                                            <a><%= username %></a>
+                                            <% } %>
+                                        </li>
+                                    <li>
+                                 
+                                        <a href="/logout">Logout</a>
+                                    </li>
+                                </ul>
+
+                                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse"
+                                    data-target=".header-nav-primary">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+
+                            </div><!-- /.header-bottom -->
+                        </div><!-- /.header-content -->
+                    </div><!-- /.header-inner -->
+                </div><!-- /.container -->
+            </div><!-- /.header-wrapper -->
+        </header><!-- /.header -->
+
+
+
+
+        <div class="main">
+            <div class="main-inner">
+                <div class="content">
+                    <div class="mt-150">
+                        <div class="hero-image">
+                            <div class="hero-image-inner" style="background-image: url('img/HomeBackground.jpg');">
+                                <div class="hero-image-content">
+                                    <div class="container" style = "text-align : center;">
+                                        <h1 style = "font-size : 55px;">Welcome to TruthOrDare</h1>
+
+                                        <p style = "font-size : 18px;">You can connect rooms if you want. This website is in Development phase,<br>thank you for patience.thank you for patience. Thanks for using TruthOrDare</p>
+
+
+                                    </div><!-- /.container -->
+                                </div><!-- /.hero-image-content -->
+
+                    
+                            </div><!-- /.hero-image-inner -->
+                        </div><!-- /.hero-image -->
+
+                    </div>
+
+                    <div class="container">
+                        <div class="block background-white fullwidth pt0 pb0">
+                      
+                        </div>
+
+                        <div class="page-header">
+                            <h1 style = "font-size : 50px">Categories</h1>
+                            <button class="btn btn-primary pull-right" onclick= "openForm()">Join Room with ID</button>
+                            <div class="form-popup" id="myForm">
+                                <form action="/joinroom" class="form-container" method="POST">
+                                  <h1>Join Room with ID</h1>
+                              
+                                  <label for="roomid"><b>Enter room ID</b></label>
+                                  <input type="text" placeholder="Room ID" name="roomid" required>
+                              
+                          
+
+                                
+                                  <button type="submit" class="btn">Join</button>
+                                  <button type="submit" class="btn cancel" onclick="openForm()">Close</button>
+                                </form>
+                              </div>
+                        </div><!-- /.page-header -->
+
+                        <div class="cards-simple-wrapper">
+                            <div class="row">
+
+
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/basketball.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Basketball';return false; ">Basketball</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/Soccer.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Soccer';return false; " >Soccer</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/cryptocurrency.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Cryptocurrency';return false; ">Cryptocurrency</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/music.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Music';return false; ">Music</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/art.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Art';return false; ">Art</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/skating.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Skating';return false; ">Skating</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/snowboarding.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Snowboarding';return false; ">Snowboarding</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/justchatting.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Just chatting';return false; ">Just Chatting</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+                            </div><!-- /.row -->
+                            <div class="row">
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/volleyball.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Volleyball';return false; ">Volleyball</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/chess.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Chess';return false; ">Chess</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/news.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'News';return false; ">News</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/cooking.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Cooking';return false; ">Cooking</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/videogames.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Video games';return false; ">Video Games</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/coding.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category" onclick="location.href=this.href+'?category='+'Coding';return false; ">Coding</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/homework.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Homework';return false; ">Homework</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+
+
+
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card-simple" data-background-image="img/movie.jpg">
+                                        <div class="card-simple-background">
+                                            <div class="card-simple-content">
+                                                <h2><a href="/category"onclick="location.href=this.href+'?category='+'Movie';return false; ">Movie</a></h2>
+                                                <div class="card-simple-rating">
+                                       
+                                                </div><!-- /.card-rating -->
+
+                                                <div class="card-simple-actions" style="height: 55px;">
+                                                
+                                                </div><!-- /.card-simple-actions -->
+                                            </div><!-- /.card-simple-content -->
+
+
+                                        </div><!-- /.card-simple-background -->
+                                    </div><!-- /.card-simple -->
+                                </div><!-- /.col-* -->
+                            </div>
+                        </div><!-- /.cards-simple-wrapper -->
+
+
+                        <div class="block background-white fullwidth mt80">
+                            <div class="row">
+                            
+
+                           
+                            </div><!-- /.row -->
+                        </div><!-- /.block -->
+
+                        <div class="block background-black-light fullwidth">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="box">
+                                        <div class="box-icon">
+                                            <i class="fa fa-life-ring"></i>
+                                        </div><!-- /.box-icon -->
+
+                                        <div class="box-content">
+                                            <h2>E-mail Support</h2>
+                                            <p>We are always here to answer all your questions. Feel free to contact us.
+                                            </p>
+
+                                           
+                                        </div><!-- /.box-content -->
+                                    </div>
+                                </div><!-- /.col-sm-4 -->
+
+                                <div class="col-sm-4">
+                                    <div class="box">
+                                        <div class="box-icon">
+                                            <i class="fa fa-flask"></i>
+                                        </div><!-- /.box-icon -->
+
+                                        <div class="box-content">
+                                            <h2>Always Improving</h2>
+                                            <p>Our dedicated team of developers are implementing awesome features.</p>
+
+                                  
+                                        </div><!-- /.box-content -->
+                                    </div>
+                                </div><!-- /.col-sm-4 -->
+
+                                <div class="col-sm-4">
+                                    <div class="box">
+                                        <div class="box-icon">
+                                            <i class="fa fa-thumbs-o-up"></i>
+                                        </div><!-- /.box-icon -->
+
+                                        <div class="box-content">
+                                            <h2>Best Quality</h2>
+                                            <p>We list only verifiend places and events to provide best content.</p>
+
+                                          
+                                        </div><!-- /.box-content -->
+                                    </div>
+                                </div><!-- /.col-sm-4 -->
+                            </div><!-- /.row -->
+
+                        </div><!-- /.block -->
+
+                                            </div><!-- /.container -->
+
+                </div><!-- /.content -->
+            </div><!-- /.main-inner -->
+        </div><!-- /.main -->
+
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h2>About TruthOrDare</h2>
+        
+                            <p>TruthOrDare is a video chatting application which bring people together on video chatting rooms with given subject.</p>
+                        </div><!-- /.col-* -->
+        
+                        <div class="col-sm-4">
+                            <h2>Contact Information</h2>
+        
+                            <p>
+                                Kadıköy, Istanbul, Turkey<br>
+                                +5077922529, <a>bora.arseven@gmail.com</a>
+                            </p>
+                        </div><!-- /.col-* -->
+                     
+                    </div><!-- /.row -->
+                </div><!-- /.container -->
+            </div><!-- /.footer-top -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="footer-bottom-left">
+                        &copy; 2021 All rights reserved. Created by <a>TruthOrDare</a>.
+                    </div><!-- /.footer-bottom-left -->
+
+                    <div class="footer-bottom-right">
+                       
+                    </div><!-- /.footer-bottom-right -->
+                </div><!-- /.container -->
+            </div>
+        </footer><!-- /.footer -->
+
+    </div><!-- /.page-wrapper -->
+
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/map.js" type="text/javascript"></script>
+
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
+
+    <script src="libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
+
+    <script src="libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
+    <script src="libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
+
+    <script src="libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=weather,geometry,visualization,places,drawing"
+        type="text/javascript"></script>
+
+    <script type="text/javascript" src="libraries/jquery-google-map/infobox.js"></script>
+    <script type="text/javascript" src="libraries/jquery-google-map/markerclusterer.js"></script>
+    <script type="text/javascript" src="libraries/jquery-google-map/jquery-google-map.js"></script>
+
+    <script type="text/javascript" src="libraries/owl.carousel/owl.carousel.js"></script>
+    <script type="text/javascript" src="libraries/bootstrap-fileinput/fileinput.min.js"></script>
+
+    <script src="js/superlist.js" type="text/javascript"></script>
+<script>
+x = 0;
+function openForm() {
+   
+    if(x == 0){
+        document.getElementById("myForm").style.display = "block";
+        x = 1;
+    }else {
+        x = 0;
+        document.getElementById("myForm").style.display = "none";
+}
+  
+  
+}</script>
+</body>
+
+</html>

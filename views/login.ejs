@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css">
+    <link href="libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="libraries/owl.carousel/assets/owl.carousel.css" rel="stylesheet" type="text/css">
+    <link href="libraries/colorbox/example1/colorbox.css" rel="stylesheet" type="text/css">
+    <link href="libraries/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+    <link href="libraries/bootstrap-fileinput/fileinput.min.css" rel="stylesheet" type="text/css">
+    <link href="css/superlist.css" rel="stylesheet" type="text/css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+
+    <title>TruthOrDare - Login</title>
+</head>
+
+
+<body class="">
+
+    <div class="page-wrapper">
+
+        <header class="header">
+            <div class="header-wrapper">
+                <div class="container">
+                    <div class="header-inner">
+                        <div class="header-logo">
+                            <a href="/home">
+                                <img src="img/logo.png" alt="Logo">
+                                <span>TruthOrDare</span>
+                            </a>
+                        </div><!-- /.header-logo -->
+
+                        <div class="header-content">
+                            <div class="header-top">
+
+                                <ul class="header-nav-secondary nav nav-pills">
+                                    <li><a href="/login">Login</a></li>
+                                    <li><a href="/register">Register</a></li>
+                                </ul>
+                            </div><!-- /.header-top -->
+
+                            <div class="header-bottom">
+
+
+                                <ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+                                    <li >
+                                        <a href="/home">Home <i class=""></i></a>
+                                
+                                        
+                                    </li>
+                                
+
+
+                                    <li class="sub-menu">
+                                        <a href="/editprofile">Profile <i class="fa fa-chevron-down"></i></a>
+                                
+                                        <ul class="sub-menu">
+                                            
+                                            <li>
+                                                <a>User Account</a>
+                                
+                                                <ul>
+                                             
+                                                    <li><a href="/login">Login Form</a></li>
+                                                    <li><a href="/register">Register Form</a></li>
+                                       
+                                                </ul>
+                                            </li>
+                                
+                                            
+                                        </ul>
+                                    </li>
+
+                                </ul>
+
+                                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse"
+                                    data-target=".header-nav-primary">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div><!-- /.header-bottom -->
+                        </div><!-- /.header-content -->
+                    </div><!-- /.header-inner -->
+                </div><!-- /.container -->
+            </div><!-- /.header-wrapper -->
+        </header><!-- /.header -->
+
+        <div class="main">
+            <div class="main-inner">
+                <div class="container">
+                    <div class="content">
+                        <div class="row">
+                            <div class="col-sm-4 col-sm-offset-4">
+                                <div class="page-title">
+                                    <h1>Login</h1>
+                                </div><!-- /.page-title -->
+
+                                <form method="POST" action="login">
+                                    <div class="form-group">
+                                        <label for="login-form-email">Username</label>
+                                        <input type="text" class="form-control" name="username" id="login-form-email"
+                                            required>
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group">
+                                        <label for="login-form-password">Password</label>
+                                        <input type="password" class="form-control" name="password"
+                                            id="login-form-password" required>
+                                    </div><!-- /.form-group -->
+                                    <button type="submit" class="btn btn-primary pull-right">Login</button>
+                                </form>
+
+                            </div><!-- /.col-sm-4 -->
+                        </div><!-- /.row -->
+                        <%if (message) { %>
+                            <h4 class="alert alert-danger mt-4">
+                                <%= message %>
+                            </h4>
+                            <% } %>
+                    </div><!-- /.content -->
+                </div><!-- /.container -->
+            </div><!-- /.main-inner -->
+        </div><!-- /.main -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h2>About TruthOrDare</h2>
+
+                            <p>TruthOrDare is a video chatting application which bring people together on video chatting
+                                rooms with given subject.</p>
+                        </div><!-- /.col-* -->
+                        <div class="col-sm-4">
+                            <h2>Contact Information</h2>
+
+                            <p>
+                                Kadıköy, Istanbul, Turkey<br>
+                                +5077922529, <a>bora.arseven@gmail.com</a>
+                            </p>
+                        </div><!-- /.col-* -->
+
+                    </div><!-- /.row -->
+                </div><!-- /.container -->
+            </div><!-- /.footer-top -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="footer-bottom-left">
+                        &copy; 2021 All rights reserved. Created by <a>TruthOrDare</a>.
+                    </div><!-- /.footer-bottom-left -->
+
+                </div><!-- /.container -->
+            </div>
+        </footer><!-- /.footer -->
+
+    </div><!-- /.page-wrapper -->
+
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/map.js" type="text/javascript"></script>
+
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
+    <script src="libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
+
+    <script src="libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
+
+    <script src="libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
+    <script src="libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
+
+    <script src="libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=weather,geometry,visualization,places,drawing"
+        type="text/javascript"></script>
+
+    <script type="text/javascript" src="libraries/jquery-google-map/infobox.js"></script>
+    <script type="text/javascript" src="libraries/jquery-google-map/markerclusterer.js"></script>
+    <script type="text/javascript" src="libraries/jquery-google-map/jquery-google-map.js"></script>
+
+    <script type="text/javascript" src="libraries/owl.carousel/owl.carousel.js"></script>
+    <script type="text/javascript" src="libraries/bootstrap-fileinput/fileinput.min.js"></script>
+
+    <script src="js/superlist.js" type="text/javascript"></script>
+
+</body>
+
+</html>
