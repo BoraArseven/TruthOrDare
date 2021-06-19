@@ -47,9 +47,11 @@ app.use('/peerjs', peerServer);
 var baglanti = mysql.createConnection({
   host: 'us-cdbr-east-04.cleardb.com',
   user: 'b0cccd5fa18e26',
-  pass: '5b7a7bab',
-  database: 'heroku_ccce1954f77335a'
+  password: '5b7a7bab',
+  database: 'heroku_ccce1954f77335a',
 });
+
+
 baglanti.connect(function (err) {
   if (err) throw err;
   console.log("Bağlantı Başarılı")
