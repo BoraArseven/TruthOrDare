@@ -1,12 +1,14 @@
 const express = require('express');
-const app = express(process.env.PORT || 3000);
+const app = express();
+app.set('port',(process.env.PORT || 3000));
 const http = require('http');
 var fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 //about socket io
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+var io = new Server(server);
+
 
 // database
 var mysql = require("mysql");
@@ -23,6 +25,10 @@ const peerServer = ExpressPeerServer(server, {
   ,
   debug: true
 });
+//
+
+ 
+
 
 // session for login
 var session = require('express-session');
@@ -56,6 +62,7 @@ baglanti.connect(function (err) {
   if (err) throw err;
   console.log("Bağlantı Başarılı")
 })
+
 
 // Defining session and usage of login
 app.use(session({
