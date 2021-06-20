@@ -300,7 +300,12 @@
       peers[userId] = call;
 
     }
-
+    socket.on('error', function() {
+    //here i change options
+    socket = io.connect('quiet-oasis-69282.herokuapp.com',{
+      'force new connection': true
+    });
+});
 
     function addVideoStream(video, stream) {
       video.srcObject = stream;

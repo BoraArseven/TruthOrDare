@@ -442,6 +442,12 @@ io.on('connection', (socket) => {
       document.write("Sorry, there seems to be an issue with the connection!");
    })
   })
+  socket.on('error', function() {
+    
+    socket = io.connect(host, {
+      'force new connection': true
+    });
+});
 });
 
 app.get('/category', (req, res) => {
