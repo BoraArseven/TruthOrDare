@@ -220,8 +220,11 @@
   <script src="/socket.io/socket.io.js"></script>
   
   <script>
+
+    
     var ROOMID = '<%= roomId %>';
-    var socket = io();
+    var socket = io.connect();
+
 
     const videoGrid = document.getElementById('video-grid');
     var peer = new Peer(undefined, {
@@ -351,7 +354,7 @@
       
       message += myname + " " + date + " " + "\n";
       msg = addNewlines(msg);
-      message += msg;a
+      message += msg;
       console.log(message)
       item.textContent = message;
       messages.appendChild(item);
