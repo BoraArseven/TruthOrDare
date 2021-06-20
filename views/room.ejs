@@ -302,7 +302,7 @@
     }
     socket.on('error', function() {
     //here i change options
-    socket = io.connect('quiet-oasis-69282.herokuapp.com',{
+    socket = io.connect({
       'force new connection': true
     });
 });
