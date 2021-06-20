@@ -51,10 +51,10 @@ app.set('view engine', 'ejs')
 app.use('/peerjs', peerServer);
 //  Database Connection
 var baglanti = mysql.createConnection({
-  host: 'us-cdbr-east-04.cleardb.com',
-  user: 'b0cccd5fa18e26',
-  password: '5b7a7bab',
-  database: 'heroku_ccce1954f77335a',
+  host: 'eu-cdbr-west-01.cleardb.com',
+  user: 'b0668337f42ac2',
+  password: 'f7b8a5b1',
+  database: 'heroku_8736a1c86ded3a6',
 });
 
 
