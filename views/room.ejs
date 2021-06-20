@@ -281,7 +281,9 @@
 
       }
     })
-
+    socket.on('connect_failed', function() {
+   document.write("Sorry, there seems to be an issue with the connection!");
+})
     peer.on('open', id => {
       console.log(peer);
       console.log("2");

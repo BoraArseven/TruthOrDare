@@ -423,6 +423,8 @@ app.get('/room/:id', (req, res) => {
     userName: userName
   });
 });
+
+
 io.on('connection', (socket) => {
   socket.on('server', (msg, roomId, userName) => {
     text = 'chat message' + roomId;
@@ -436,6 +438,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       io.emit(closeroom, userId)
     })
+    socket.on('connect_failed', function() {
+      document.write("Sorry, there seems to be an issue with the connection!");
+   })
   })
 });
 
