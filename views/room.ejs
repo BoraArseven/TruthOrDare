@@ -211,19 +211,19 @@
 
 
 
-  On Elastic Beanstalk: Nginx turned of
 
 
 
 
-  <script type="text/javascript" src="http://truthordareelastic-env.eba-jmap23sg.eu-central-1.elasticbeanstalk.com/socket.io/socket.io.js"></script>
+
+  <script type="text/javascript" src="http://truthordareisikun.herokuapp.com/socket.io/socket.io.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   
   <script>
 
     
     var ROOMID = '<%= roomId %>';
-    var socket = io.connect("/");
+    var socket = io.connect("https://truthordareisikun.herokuapp.com/");
 
 
     const videoGrid = document.getElementById('video-grid');
