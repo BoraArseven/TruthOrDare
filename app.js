@@ -8,10 +8,25 @@ const { v4: uuidv4 } = require('uuid');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 var io = new Server(server);
-
-
+var crypto = require('crypto');
+var shasum = crypto.createHash('sha1');
 // database
 var mysql = require("mysql");
+
+// SQlite
+const sqlite3 = require('sqlite3').verbose();
+let sql;
+
+//connect to DB
+const db = new sqlite3.Database('data.sqlite',sqlite3.OPEN_READWRITE,(err)=>{
+  if (err) return console.error(err.message);
+  console.log("connected to sqlite database");
+});
+
+function sha1(data) {
+    return crypto.createHash("sha1").update(data, "binary").digest("hex");
+};
+
 
 // Peer js
 const { ExpressPeerServer } = require('peer');
@@ -33,6 +48,7 @@ const peerServer = ExpressPeerServer(server, {
 // session for login
 var session = require('express-session');
 const { render } = require('ejs');
+const { start } = require('discordie/lib/core/DiscordieProfiler');
 
 // Static Files
 app.use(express.static('public'))
@@ -50,7 +66,37 @@ app.set('view engine', 'ejs')
 //using peer server
 app.use('/peerjs', peerServer);
 //  Database Connection
-var baglanti = mysql.createConnection({
+
+var baglanti;
+function handleDisconnect() {
+  baglanti = mysql.createConnection({
+    host: 'eu-cdbr-west-01.cleardb.com',
+    user: 'b0668337f42ac2',
+    password: 'f7b8a5b1',
+    database: 'heroku_8736a1c86ded3a6',
+  }); // Recreate the connection, since
+                                                  // the old one cannot be reused.
+
+  baglanti.connect(function(err) {              // The server is either down
+    if(err) {                                     // or restarting (takes a while sometimes).
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+    }                                     // to avoid a hot loop, and to allow our node script to
+  });                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+  baglanti.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+handleDisconnect();
+
+
+let pool = mysql.createPool({
   host: 'eu-cdbr-west-01.cleardb.com',
   user: 'b0668337f42ac2',
   password: 'f7b8a5b1',
@@ -58,10 +104,7 @@ var baglanti = mysql.createConnection({
 });
 
 
-baglanti.connect(function (err) {
-  if (err) throw err;
-  console.log("Bağlantı Başarılı")
-})
+
 
 
 // Defining session and usage of login
@@ -78,28 +121,67 @@ app.get('/login', (req, res) => {
     message: '',
   });
 })
+try {
+  app.post('/login', function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    console.log("we are here"); 
 
-app.post('/login', function (req, res) {
-  var username = req.body.username;
-  var password = req.body.password;
-  if (username && password) {
-    baglanti.query('SELECT * FROM user WHERE username = ? AND password = SHA1(?)', [username, password], function (error, results, fields) {
-      if (results.length > 0) {
-        req.session.loggedin = true;
-        req.session.username = username;
-        res.redirect('/home');
-      } else {
-        res.render('login', {
-          message: 'Your username or password is incorrect.'
-        });
-      }
-    });
-  } else {
-    res.render('login', {
-      message: 'Please fill all of the blanks'
-    });
+
+   if (username && password) {
+    // commented code of mysql login check
+    sql = "SELECT * FROM user WHERE username ='"+username +"'AND password = SHA1('"+password +"')";
+    console.log(sql);
+      console.log(baglanti.query(sql, [], function (error, results, fields) {
+        console.log(sql);
+        if (results.length > 0) {
+          req.session.loggedin = true;
+          req.session.username = username;
+          res.redirect('/home');
+        } else {
+          res.render('login', {
+            message: 'Your username or password is incorrect.'
+          });
+        }
+      }).sql);
+    }
+  })
+} catch (error) {
+    console.log (error);
   }
-});
+  
+  
+//    password = sha1(password);
+   
+//    sql = "SELECT * FROM user WHERE username ='"+username + "' AND password ='"+password+"'";
+//    console.log(sql);
+//    db.get(sql,[], (err,row) => {
+//     console.log(sql);
+// if(err) return console.error(err.message);
+// console.log("founded users");
+// console.log(row);
+// if (row != null) {
+  
+//         req.session.loggedin = true;
+//         req.session.username = username;
+//         res.redirect('/home');
+//       } else {
+//         res.render('login', {
+//           message: 'Your username or password is incorrect.'
+//         });
+//       }
+//     })
+      
+//     } else {
+//       res.render('login', {
+//         message: 'Please fill all of the blanks'
+//       });
+//     }
+//   });
+// } catch (error) {
+//   console.log (error);
+// }
+
 //register get and post
 
 app.get('/register', (req, res) => {
@@ -116,6 +198,7 @@ app.post('/register', function (req, res) {
   if (username && password && email && password_retype) {
     if (password == password_retype) {
       //looking for username matching
+      
       baglanti.query('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -424,31 +507,40 @@ app.get('/room/:id', (req, res) => {
   });
 });
 
-
-io.on('connection', (socket) => {
-  socket.on('server', (msg, roomId, userName) => {
-    text = 'chat message' + roomId;
-    io.emit(text, msg, userName);
-  });
-  socket.on('join-room', (roomId, userId) => {
-    var room = 'user-connected' + roomId;
-    console.log("user connected");
-    socket.broadcast.emit(room, userId);
-    var closeroom = 'user-disconnected' + roomId;
-    socket.on('disconnect', () => {
-      io.emit(closeroom, userId)
-    })
-    socket.on('connect_failed', function() {
-      document.write("Sorry, there seems to be an issue with the connection!");
-   })
-  })
-  socket.on('error', function() {
-    
-    socket = io.connect(host, {
-      'force new connection': true
+try{
+  io.on('connection', (socket) => {
+    socket.on('server', (msg, roomId, userName) => {
+      text = 'chat message' + roomId;
+      io.emit(text, msg, userName);
     });
+    socket.on('join-room', (roomId, userId) => {
+      var room = 'user-connected' + roomId;
+      console.log("user connected");
+      socket.broadcast.emit(room, userId);
+      var closeroom = 'user-disconnected' + roomId;
+      socket.on('disconnect', () => {
+        io.emit(closeroom, userId)
+      })
+      socket.on('connect_failed', function() {
+        document.write("Sorry, there seems to be an issue with the connection!");
+     })
+    })
+    socket.on('error', function() {
+      
+      socket = io.connect(host, {
+        'force new connection': true
+      });
+  });
+  });
+  pool.on('connection', function (baglanti) {
+    if (baglanti) {
+        logger.info('Connected the database via threadId %d!!', baglanti.threadId);
+        baglanti.query('SET SESSION auto_increment_increment=1');
+    }
 });
-});
+}catch(err){
+  console.log("There is an error during creating socket io connection.")
+}
 
 app.get('/category', (req, res) => {
 
@@ -501,6 +593,7 @@ app.get('/logout', (req, res) => {
   req.session.loggedin = false;
   req.session.username = null;
   res.redirect('/login');
+    
 })
 
 

@@ -19,6 +19,7 @@
     "openssl": "^1.1.0",
     "peer": "^0.6.1",
     "socket.io": "^4.1.2",
+    "sqlite3": "^5.1.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
