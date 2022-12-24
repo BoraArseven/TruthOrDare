@@ -48,7 +48,7 @@ const peerServer = ExpressPeerServer(server, {
 // session for login
 var session = require('express-session');
 const { render } = require('ejs');
-const { start } = require('discordie/lib/core/DiscordieProfiler');
+//const { start } = require('discordie/lib/core/DiscordieProfiler');
 
 // Static Files
 app.use(express.static('public'))
