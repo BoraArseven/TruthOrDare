@@ -610,6 +610,6 @@ function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+console.log("server is listening on" +process.env.PORT +", " +"80");
 
-
-server.listen(process.env.PORT||3000);
+server.listen(process.env.PORT||80);
