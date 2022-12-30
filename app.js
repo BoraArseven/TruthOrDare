@@ -21,6 +21,7 @@ let sql;
 const db = new sqlite3.Database('data.sqlite',sqlite3.OPEN_READWRITE,(err)=>{
   if (err) return console.error(err.message);
   console.log("connected to sqlite database");
+  console.log("listening on port 80");
 });
 
 function sha1(data) {
