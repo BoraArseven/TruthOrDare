@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-app.set('port',(process.env.PORT || 8080));
+app.set('port',(process.env.PORT || 3000));
 const http = require('http');
 var fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -21,6 +21,7 @@ let sql;
 const db = new sqlite3.Database('data.sqlite',sqlite3.OPEN_READWRITE,(err)=>{
   if (err) return console.error(err.message);
   console.log("connected to sqlite database");
+  console.log("listening on port 80");
 });
 
 function sha1(data) {
@@ -68,43 +69,40 @@ app.use('/peerjs', peerServer);
 //  Database Connection
 
 var baglanti;
-// function handleDisconnect() {
-//   baglanti = null;
-  
-  // mysql.createConnection({
-  //   host: 'eu-cdbr-west-01.cleardb.com',
-  //   user: 'b0668337f42ac2',
-  //   password: 'f7b8a5b1',
-  //   database: 'heroku_8736a1c86ded3a6',
-  // });
-   // Recreate the connection, since
+function handleDisconnect() {
+  baglanti = mysql.createConnection({
+    host: 'eu-cdbr-west-01.cleardb.com',
+    user: 'b0668337f42ac2',
+    password: 'f7b8a5b1',
+    database: 'heroku_8736a1c86ded3a6',
+  }); // Recreate the connection, since
                                                   // the old one cannot be reused.
 
-//   baglanti.connect(function(err) {              // The server is either down
-//     if(err) {                                     // or restarting (takes a while sometimes).
-//       console.log('error when connecting to db:', err);
-//       setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-//     }                                     // to avoid a hot loop, and to allow our node script to
-//   });                                     // process asynchronous requests in the meantime.
-//                                           // If you're also serving http, display a 503 error.
-//   baglanti.on('error', function(err) {
-//     console.log('db error', err);
-//     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-//       handleDisconnect();                         // lost due to either server restart, or a
-//     } else {                                      // connnection idle timeout (the wait_timeout
-//       throw err;                                  // server variable configures this)
-//     }
-//   });
-// }
-// handleDisconnect();
+  baglanti.connect(function(err) {              // The server is either down
+    if(err) {                                     // or restarting (takes a while sometimes).
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+    }                                     // to avoid a hot loop, and to allow our node script to
+  });                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+  baglanti.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+handleDisconnect();
 
 
-// let pool = mysql.createPool({
-//   host: 'eu-cdbr-west-01.cleardb.com',
-//   user: 'b0668337f42ac2',
-//   password: 'f7b8a5b1',
-//   database: 'heroku_8736a1c86ded3a6',
-// });
+let pool = mysql.createPool({
+  host: 'eu-cdbr-west-01.cleardb.com',
+  user: 'b0668337f42ac2',
+  password: 'f7b8a5b1',
+  database: 'heroku_8736a1c86ded3a6',
+});
 
 
 
@@ -129,53 +127,61 @@ try {
     var username = req.body.username;
     var password = req.body.password;
     console.log("we are here"); 
-//    if (username && password) {
-//     // commented code of mysql login check
-//     sql = "SELECT * FROM user WHERE username ='"+username +"'AND password = SHA1('"+password +"')";
-//     console.log(sql);
-//       console.log(baglanti.query(sql, [], function (error, results, fields) {
-//         console.log(sql);
-//         if (results.length > 0) {
-//           req.session.loggedin = true;
-//           req.session.username = username;
-//           res.redirect('/home');
-//         } else {
-//           res.render('login', {
-//             message: 'Your username or password is incorrect.'
-//           });
-//         }
-//       }).sql);
-//     }
-//   })
-// } catch (error) {
-//     console.log (error);
-//   }
-   password = sha1(password);
-   
-   sql = "SELECT * FROM user WHERE username ='"+username + "' AND password ='"+password+"'";
-   console.log(sql);
-   db.get(sql,[], (err,row) => {
+
+
+   if (username && password) {
+    // commented code of mysql login check
+    sql = "SELECT * FROM user WHERE username ='"+username +"'AND password = SHA1('"+password +"')";
     console.log(sql);
-if(err) return console.error(err.message);
-console.log("founded users");
-console.log(row);
-if (row != null) {
+      console.log(baglanti.query(sql, [], function (error, results, fields) {
+        console.log(sql);
+        if (results.length > 0) {
+          req.session.loggedin = true;
+          req.session.username = username;
+          res.redirect('/home');
+        } else {
+          res.render('login', {
+            message: 'Your username or password is incorrect.'
+          });
+        }
+      }).sql);
+    }
+  })
+} catch (error) {
+    console.log (error);
+  }
   
-        req.session.loggedin = true;
-        req.session.username = username;
-        res.redirect('/home');
-      } else {
-        res.render('login', {
-          message: 'Your username or password is incorrect.'
-        });
-      }
-    })
+  
+//    password = sha1(password);
+   
+//    sql = "SELECT * FROM user WHERE username ='"+username + "' AND password ='"+password+"'";
+//    console.log(sql);
+//    db.get(sql,[], (err,row) => {
+//     console.log(sql);
+// if(err) return console.error(err.message);
+// console.log("founded users");
+// console.log(row);
+// if (row != null) {
+  
+//         req.session.loggedin = true;
+//         req.session.username = username;
+//         res.redirect('/home');
+//       } else {
+//         res.render('login', {
+//           message: 'Your username or password is incorrect.'
+//         });
+//       }
+//     })
       
-    } 
-    
-)} catch (error) {
-  console.log (error);
-}
+//     } else {
+//       res.render('login', {
+//         message: 'Please fill all of the blanks'
+//       });
+//     }
+//   });
+// } catch (error) {
+//   console.log (error);
+// }
 
 //register get and post
 
