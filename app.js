@@ -527,12 +527,13 @@ try{
       });
   });
   });
-  pool.on('connection', function (baglanti) {
-    if (baglanti) {
-        logger.info('Connected the database via threadId %d!!', baglanti.threadId);
-        baglanti.query('SET SESSION auto_increment_increment=1');
-    }
-});
+
+//   pool.on('connection', function (baglanti) {
+//     if (baglanti) {
+//         logger.info('Connected the database via threadId %d!!', baglanti.threadId);
+//         baglanti.query('SET SESSION auto_increment_increment=1');
+//     }
+// });
 }catch(err){
   console.log("There is an error during creating socket io connection.")
 }
