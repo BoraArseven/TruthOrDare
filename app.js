@@ -48,6 +48,7 @@ const peerServer = ExpressPeerServer(server, {
 // session for login
 var session = require('express-session');
 const { render } = require('ejs');
+const { ifError } = require('assert');
 //const { start } = require('discordie/lib/core/DiscordieProfiler');
 
 // Static Files
@@ -150,12 +151,25 @@ try {
 // } catch (error) {
 //     console.log (error);
 //   }
-   password = sha1(password);
-   
-   sql = "SELECT * FROM user WHERE username ='"+username + "' AND password ='"+password+"'";
-   console.log(sql);
-   db.get(sql,[], (err,row) => {
+
+  pw = sha1(password);
+  console.log(pw);
+   //sql = , [username,pw];
+   //console.log(sql);
+  //  db.get('SELECT * FROM user WHERE username = ? AND password = ?', [username,password], function (error, results, fields) {
+  //   if (error) {
+  //     console.log(error);
+  //   }
+  //   if (results.length > 0) {
+  //     req.session.loggedin = true;
+  //     req.session.username = username;
+  //     res.redirect('/home');
+  //   } 
+  //  })
+   //console.log(sql);
+   db.get('SELECT * FROM user WHERE username = ? AND password = ?',[username,pw], (err,row) => {
     console.log(sql);
+    console.log (row);
 if(err) return console.error(err.message);
 console.log("founded users");
 console.log(row);
@@ -194,17 +208,21 @@ app.post('/register', function (req, res) {
     if (password == password_retype) {
       //looking for username matching
       
-      baglanti.query('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+      db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+        console.log(results);
         if (error) {
           console.log(error);
         }
-        if (results.length > 0) {
+        if (results!=null) {
           res.render('register', {
             message: 'Username is already taken.'
           });
         } else {
           //looking for email matching
-          baglanti.query('SELECT * FROM user WHERE email = ?', [email], function (error, results1, fields) {
+          db.get('SELECT * FROM user WHERE email = ?', [email], function (error, results1, fields) {
+            if(error){
+              console.log(error);
+            }
             if (results1.length > 0) {
               res.render('register', {
                 message: 'Email is already taken.'
@@ -214,14 +232,24 @@ app.post('/register', function (req, res) {
 
               console.log("register oldunuz");
               // database ekleme
-              baglanti.query('INSERT INTO user(username,email,password) VALUES (?,?,SHA1(?));', [username, email, password], function (error, results, fields) {
-                if (error) {
+              pw = sha1(password);
+              db.run('INSERT INTO user(username,email,password) VALUES (?,?,?);', [username, email, pw]),function (error,results,fields){
+                if(error){
                   console.log(error);
                 }
                 req.session.loggedin = true;
                 req.session.username = username;
                 res.redirect('/home');
-              });
+              };
+               
+              // baglanti.query('INSERT INTO user(username,email,password) VALUES (?,?,SHA1(?));', [username, email, password], function (error, results, fields) {
+              //   if (error) {
+              //     console.log(error);
+              //   }
+              //   req.session.loggedin = true;
+              //   req.session.username = username;
+              //   res.redirect('/home');
+              // });
             }
           });
         }
@@ -265,7 +293,7 @@ app.get('/home', function (req, res) {
 app.get('/editprofile', (req, res) => {
   if (req.session.loggedin) {
     var username = req.session.username;
-    baglanti.query('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+    db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
       var photoa = "profilephotos/" + results[0].photo;
       console.log(results[0]);
       //convert int to string
@@ -295,7 +323,7 @@ app.post('/editprofile', function (req, res) {
   var message = "";
   var message1 = "";
   var message2 = "";
-  baglanti.query('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+  db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
     username = req.session.username;
     email = results[0].email;
     var newusername = req.body.newusername;
@@ -309,15 +337,15 @@ app.post('/editprofile', function (req, res) {
       //
       if (newusername) {
         //check new username is taken or not
-        baglanti.query('SELECT * FROM user WHERE username = ?', [newusername], function (error, results, fields) {
+        db.get('SELECT * FROM user WHERE username = ?', [newusername], function (error, results, fields) {
 
-          if (results.length > 0) {
+          if (results!=null) {
 
             message = 'Username is already taken.';
 
           }
           else {
-            baglanti.query('UPDATE user SET username = ? WHERE username = ? ', [newusername, username]);
+            db.run('UPDATE user SET username = ? WHERE username = ? ', [newusername, username]);
             message = 'Username is changed';
             req.session.username = newusername;
             username = newusername;
@@ -337,7 +365,7 @@ app.post('/editprofile', function (req, res) {
       if (newemail) {
 
         //check new username is taken or not
-        baglanti.query('SELECT * FROM user WHERE email = ?', [newemail], function (error, results, fields) {
+        db.get('SELECT * FROM user WHERE email = ?', [newemail], function (error, results, fields) {
           if (error) {
             console.log(error);
           }
@@ -351,7 +379,7 @@ app.post('/editprofile', function (req, res) {
 
             console.log(newemail);
             console.log(oldemail);
-            baglanti.query('UPDATE user SET email = ? WHERE email = ? ', [newemail, oldemail]);
+            db.run('UPDATE user SET email = ? WHERE email = ? ', [newemail, oldemail]);
             email = newemail;
             message1 = " Email is changed.";
           }
@@ -367,7 +395,7 @@ app.post('/editprofile', function (req, res) {
       if (newgender) {
         newgenderlower = newgender.toLowerCase();
         if (newgenderlower == "male" || newgenderlower == "female" || newgenderlower == "other") {
-          baglanti.query('UPDATE user SET gender = ? WHERE username = ? ', [newgenderlower, results[0].username]);
+          db.run('UPDATE user SET gender = ? WHERE username = ? ', [newgenderlower, results[0].username]);
           message2 = "Gender is changed to " + newgenderlower;
         } else {
           // only male, female or other
@@ -381,7 +409,7 @@ app.post('/editprofile', function (req, res) {
       //change gender
     }
 
-    baglanti.query('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+    db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
       var photoa = "profilephotos/" + results[0].photo;
       console.log(results[0]);
       //convert int to string
@@ -406,7 +434,7 @@ app.post('/createroom', function (req, res) {
   var description = req.body.description;
   var category = req.body.category;
   var roomid = uuidv4();
-  baglanti.query('INSERT INTO room(roomName,description,categoryName,roomid) VALUES (?,?,?,?);', [roomname, description, category,roomid], function (error, results, fields) {
+  db.run('INSERT INTO room(roomName,description,categoryName,roomid) VALUES (?,?,?,?);', [roomname, description, category,roomid], function (error, results, fields) {
     if(error){
       console.log(error);
     }
@@ -450,13 +478,15 @@ app.post('/changepassword', function (req, res) {
   console.log(oldpassword + " " + newpassword + " " + newpasswordretype + " " + username)
   if (oldpassword && newpassword && newpasswordretype) {
     if (newpassword == newpasswordretype) {
-      baglanti.query('SELECT password FROM user WHERE username = ? AND password = SHA1(?)', [username, oldpassword], function (error, results, fields) {
+      oldpw = sha1(oldpw);
+      db.get('SELECT password FROM user WHERE username = ? AND password = ?', [username, oldpw], function (error, results, fields) {
         console.log("1");
         if (error) {
           console.log(error);
         }
         if (results.length > 0) {
-          baglanti.query('UPDATE user SET password = SHA1(?) WHERE username = ? AND password = SHA1(?)', [newpassword, username, oldpassword], function (error, results, fields) {
+          newpw = sha1(newpassword);
+          db.run('UPDATE user SET password = SHA1(?) WHERE username = ? AND password = SHA1(?)', [newpw, username, oldpw], function (error, results, fields) {
             console.log("2");
             if (error) {
               console.log(error);
@@ -544,7 +574,7 @@ app.get('/category', (req, res) => {
   if (req.session.loggedin) {
     var category = getParameterByName('category', req.url);
     //selecting all rooms which are in this category
-    baglanti.query('SELECT * FROM room WHERE categoryName = ?', [category], function (error, results, fields) {
+    db.get('SELECT * FROM room WHERE categoryName = ?', [category], function (error, results, fields) {
       var roomName = [];
       var description = [];
       var categoryName = [];
@@ -608,4 +638,4 @@ function getParameterByName(name, url) {
 
 console.log("server is listening on" +process.env.PORT +", " +"80");
 
-server.listen(process.env.PORT||80);
+server.listen(process.env.PORT||8080);
