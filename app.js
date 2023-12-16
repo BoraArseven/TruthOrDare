@@ -167,7 +167,7 @@ try {
   //   } 
   //  })
    //console.log(sql);
-   db.get('SELECT * FROM user WHERE username = ? AND password = ?',[username,pw], (err,row) => {
+   db.all('SELECT * FROM user WHERE username = ? AND password = ?',[username,pw], (err,row) => {
     console.log(sql);
     console.log (row);
 if(err) return console.error(err.message);
@@ -179,10 +179,12 @@ if (row != null) {
         req.session.username = username;
         res.redirect('/home');
       } else {
+
         res.render('login', {
           message: 'Your username or password is incorrect.'
         });
       }
+
     })
       
     } 
@@ -199,17 +201,18 @@ app.get('/register', (req, res) => {
   });
 });
 
-app.post('/register', function (req, res) {
+app.post('/register',async function (req, res) {
   var email = req.body.email;
   var username = req.body.username;
   var password = req.body.password;
   var password_retype = req.body.password_retype;
+  console.log(username);
+  console.log(password);
   if (username && password && email && password_retype) {
     if (password == password_retype) {
       //looking for username matching
       
-      db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
-        console.log(results);
+      db.all('SELECT * FROM user WHERE username = ?', [username],await async function (error, results, fields) {
         if (error) {
           console.log(error);
         }
@@ -219,11 +222,13 @@ app.post('/register', function (req, res) {
           });
         } else {
           //looking for email matching
-          db.get('SELECT * FROM user WHERE email = ?', [email], function (error, results1, fields) {
+          
+          db.all('SELECT * FROM user WHERE email = ?', [email],await async function (error, results1, fields) {
             if(error){
               console.log(error);
             }
-            if (results1.length > 0) {
+
+            if (results1!=null ) {
               res.render('register', {
                 message: 'Email is already taken.'
               });
@@ -233,14 +238,21 @@ app.post('/register', function (req, res) {
               console.log("register oldunuz");
               // database ekleme
               pw = sha1(password);
-              db.run('INSERT INTO user(username,email,password) VALUES (?,?,?);', [username, email, pw]),function (error,results,fields){
-                if(error){
+              db.run('INSERT INTO user(username,email,password) VALUES (?,?,?);', [username, email, pw], function (error, result) {
+                if (error) {
                   console.log(error);
+                  res.status(500).send('Database error');
+                } else {
+                  console.log("added to database");
+                  req.session.loggedin = true;
+                  req.session.username = username;
+                  console.log("-----Session information-----")
+                  console.log(req.session.loggedin);
+                  console.log(req.session.username);
+                 
+                  res.redirect('/home');
                 }
-                req.session.loggedin = true;
-                req.session.username = username;
-                res.redirect('/home');
-              };
+              });
                
               // baglanti.query('INSERT INTO user(username,email,password) VALUES (?,?,SHA1(?));', [username, email, password], function (error, results, fields) {
               //   if (error) {
@@ -293,37 +305,64 @@ app.get('/home', function (req, res) {
 app.get('/editprofile', (req, res) => {
   if (req.session.loggedin) {
     var username = req.session.username;
-    db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
-      var photoa = "profilephotos/" + results[0].photo;
-      console.log(results[0]);
-      //convert int to string
-      res.render('user-profile-edit',
-        {
-          username: results[0].username,
-          email: results[0].email,
-          gender: results[0].gender,
-          upvotecount: results[0].upvoteCount,
-          photo: photoa,
-          message: '',
-          message1: '',
-          message2: ''
+    db.all('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+      // Handle any errors from the query
+      if (error) {
+        console.error(error);
+        res.status(500).send('Something went wrong');
+        return;
+      }
+      // Check if the query returned any rows
+      if (results) {
+        // Check if the query returned at least one row
+        if (results.length > 0) {
+          console.log(results[0].photo);
+          var photoa = "profilephotos/" + results[0].photo;
+          
+          console.log(results[0]);
+          //convert int to string
+          res.render('user-profile-edit',
+            {
+              username: results[0].username,
+              email: results[0].email,
+              gender: results[0].gender,
+              upvotecount: results[0].upvoteCount,
+              photo: photoa,
+              message: '',
+              message1: '',
+              message2: ''
+            }
+          );
         }
-      );
+        else {
+          // Handle the case when the query returned zero rows
+          console.log('No user found with username ' + username);
+          res.status(404).send('User not found');
+          return;
+        }
+      }
+      else {
+        // Handle the case when the query returned nothing
+        console.log('No results from the query');
+        res.status(404).send('User not found');
+        return;
+      }
     })
-
   } else {
     res.redirect('/login');
   }
-
-
 })
+
 app.post('/editprofile', function (req, res) {
   var username = req.session.username;
   var email = "";
   var message = "";
   var message1 = "";
   var message2 = "";
-  db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+  db.all('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+    if(error){
+      console.log(error);
+    }
     username = req.session.username;
     email = results[0].email;
     var newusername = req.body.newusername;
@@ -337,7 +376,7 @@ app.post('/editprofile', function (req, res) {
       //
       if (newusername) {
         //check new username is taken or not
-        db.get('SELECT * FROM user WHERE username = ?', [newusername], function (error, results, fields) {
+        db.all('SELECT * FROM user WHERE username = ?', [newusername], function (error, results, fields) {
 
           if (results!=null) {
 
@@ -365,15 +404,18 @@ app.post('/editprofile', function (req, res) {
       if (newemail) {
 
         //check new username is taken or not
-        db.get('SELECT * FROM user WHERE email = ?', [newemail], function (error, results, fields) {
+        db.all('SELECT * FROM user WHERE email = ?', [newemail], function (error, results, fields) {
           if (error) {
             console.log(error);
           }
-          if (results.length > 0) {
+          if (results!=null){
+            if (results.length > 0) {
 
-            message1 = " Email is already taken.";
-
+              message1 = " Email is already taken.";
+  
+            }
           }
+         
           else {
 
 
@@ -409,11 +451,26 @@ app.post('/editprofile', function (req, res) {
       //change gender
     }
 
-    db.get('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
-      var photoa = "profilephotos/" + results[0].photo;
-      console.log(results[0]);
-      //convert int to string
-      res.render('user-profile-edit',
+    db.all('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
+      if (results!=null){
+        var photoa = "profilephotos/" + results[0].photo;
+        console.log(results[0]);
+        //convert int to string
+        res.render('user-profile-edit',
+          {
+            username: username,
+            email: email,
+            gender: results[0].gender,
+            upvotecount: results[0].upvoteCount,
+            photo: photoa,
+            message: message,
+            message1: message1,
+            message2: message2
+          }
+        );
+      }else{
+        var photoa = "profilephotos/default-profile.png";
+        res.render('user-profile-edit',
         {
           username: username,
           email: email,
@@ -425,6 +482,9 @@ app.post('/editprofile', function (req, res) {
           message2: message2
         }
       );
+      }
+      
+  
     });
   });
 });
@@ -479,7 +539,7 @@ app.post('/changepassword', function (req, res) {
   if (oldpassword && newpassword && newpasswordretype) {
     if (newpassword == newpasswordretype) {
       oldpw = sha1(oldpw);
-      db.get('SELECT password FROM user WHERE username = ? AND password = ?', [username, oldpw], function (error, results, fields) {
+      db.all('SELECT password FROM user WHERE username = ? AND password = ?', [username, oldpw], function (error, results, fields) {
         console.log("1");
         if (error) {
           console.log(error);
@@ -574,37 +634,39 @@ app.get('/category', (req, res) => {
   if (req.session.loggedin) {
     var category = getParameterByName('category', req.url);
     //selecting all rooms which are in this category
-    db.get('SELECT * FROM room WHERE categoryName = ?', [category], function (error, results, fields) {
+    db.all('SELECT * FROM room WHERE categoryName = ?', [category], function (error, results, fields) {
       var roomName = [];
       var description = [];
       var categoryName = [];
       var roomid = [];
 
-
-      if (results.length > 0) {
-        var i = 0;
-        var photo = "";
-        for (i = 0; i < results.length; i++) {
-          roomName.push(results[i].roomName);
-          description.push(results[i].description);
-          categoryName.push(results[i].categoryName);
-          roomid.push(results[i].roomid);
-          photo = results[0].categoryName;
-          photo = photo.replace(/\s/g,'');
-        }
-        var roomcount = results.length;
-     
-        res.render('category',
-          {
-            roomName: roomName,
-            description: description,
-            roomId: roomid,
-            categoryName: categoryName,
-            username: req.session.username,
-            photo: photo,
-            roomcount: roomcount
-          })
-      } else {
+if(results !=null){
+  if (results.length > 0) {
+    var i = 0;
+    var photo = "";
+    for (i = 0; i < results.length; i++) {
+      roomName.push(results[i].roomName);
+      description.push(results[i].description);
+      categoryName.push(results[i].categoryName);
+      roomid.push(results[i].roomid);
+      photo = results[0].categoryName;
+      photo = photo.replace(/\s/g,'');
+    }
+    var roomcount = results.length;
+ 
+    res.render('category',
+      {
+        roomName: roomName,
+        description: description,
+        roomId: roomid,
+        categoryName: categoryName,
+        username: req.session.username,
+        photo: photo,
+        roomcount: roomcount
+      })
+  } 
+}
+     else {
         res.redirect('/home');
       }
     });
