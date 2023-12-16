@@ -216,7 +216,7 @@ app.post('/register',async function (req, res) {
         if (error) {
           console.log(error);
         }
-        if (results!=null) {
+        if (results.length > 0) {
           res.render('register', {
             message: 'Username is already taken.'
           });
@@ -228,7 +228,7 @@ app.post('/register',async function (req, res) {
               console.log(error);
             }
 
-            if (results1!=null ) {
+            if (results1.length > 0 ) {
               res.render('register', {
                 message: 'Email is already taken.'
               });
@@ -378,7 +378,7 @@ app.post('/editprofile', function (req, res) {
         //check new username is taken or not
         db.all('SELECT * FROM user WHERE username = ?', [newusername], function (error, results, fields) {
 
-          if (results!=null) {
+          if (results.length>0) {
 
             message = 'Username is already taken.';
 
@@ -408,13 +408,13 @@ app.post('/editprofile', function (req, res) {
           if (error) {
             console.log(error);
           }
-          if (results!=null){
+         
             if (results.length > 0) {
 
               message1 = " Email is already taken.";
   
             }
-          }
+          
          
           else {
 
@@ -452,7 +452,7 @@ app.post('/editprofile', function (req, res) {
     }
 
     db.all('SELECT * FROM user WHERE username = ?', [username], function (error, results, fields) {
-      if (results!=null){
+      if (results.length>1){
         var photoa = "profilephotos/" + results[0].photo;
         console.log(results[0]);
         //convert int to string
@@ -640,7 +640,6 @@ app.get('/category', (req, res) => {
       var categoryName = [];
       var roomid = [];
 
-if(results !=null){
   if (results.length > 0) {
     var i = 0;
     var photo = "";
@@ -665,7 +664,7 @@ if(results !=null){
         roomcount: roomcount
       })
   } 
-}
+
      else {
         res.redirect('/home');
       }
