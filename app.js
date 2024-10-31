@@ -538,15 +538,15 @@ app.post('/changepassword', function (req, res) {
   console.log(oldpassword + " " + newpassword + " " + newpasswordretype + " " + username)
   if (oldpassword && newpassword && newpasswordretype) {
     if (newpassword == newpasswordretype) {
-      oldpw = sha1(oldpw);
-      db.all('SELECT password FROM user WHERE username = ? AND password = ?', [username, oldpw], function (error, results, fields) {
+      oldpassword = sha1(oldpassword);
+      db.all('SELECT password FROM user WHERE username = ? AND password = ?', [username, oldpassword], function (error, results, fields) {
         console.log("1");
         if (error) {
           console.log(error);
         }
         if (results.length > 0) {
           newpw = sha1(newpassword);
-          db.run('UPDATE user SET password = SHA1(?) WHERE username = ? AND password = SHA1(?)', [newpw, username, oldpw], function (error, results, fields) {
+          db.run('UPDATE user SET password = SHA1(?) WHERE username = ? AND password = SHA1(?)', [newpw, username, oldpassword], function (error, results, fields) {
             console.log("2");
             if (error) {
               console.log(error);
